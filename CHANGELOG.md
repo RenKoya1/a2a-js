@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.0.0-beta.1](https://github.com/a2aproject/a2a-js/compare/v1.0.0-beta.0...v1.0.0-beta.1) (2026-07-14)
+
+
+### Features
+
+* add state bag and ServerCallContextBuilder to ServerCallContext ([#364](https://github.com/a2aproject/a2a-js/issues/364)) ([477e394](https://github.com/a2aproject/a2a-js/commit/477e394981a92a118f3a738a0401fc45193612da))
+* export SSE wire-format helpers from public entry point ([#548](https://github.com/a2aproject/a2a-js/issues/548)) ([8bc21f5](https://github.com/a2aproject/a2a-js/commit/8bc21f5697f4b3ea31a1788747db418e6619809f)), closes [#547](https://github.com/a2aproject/a2a-js/issues/547)
+* **server:** expose SendMessageRequest metadata to AgentExecutor via RequestContext ([#564](https://github.com/a2aproject/a2a-js/issues/564)) ([a92f54e](https://github.com/a2aproject/a2a-js/commit/a92f54ec6ea5aa0c3d13891fd4ad110e97b07e93))
+
+
+### Bug Fixes
+
+* resolve sdk compatibility bugs and add itk scenarios ([#568](https://github.com/a2aproject/a2a-js/issues/568)) ([b57f026](https://github.com/a2aproject/a2a-js/commit/b57f026f82b022eee16bd09907a9ecac0162784f))
+
 ## [1.0.0-beta.0](https://github.com/a2aproject/a2a-js/compare/v1.0.0-alpha.0...v1.0.0-beta.0) (2026-07-01)
 
 The v0.3 backward-compatibility layer is now complete, marking this release as the first one bringing v1.0 and v0.3 support together.
