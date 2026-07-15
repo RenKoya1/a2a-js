@@ -1031,6 +1031,96 @@ describe('DefaultRequestHandler as A2ARequestHandler', () => {
     assert.deepEqual(result, fakeTask);
   });
 
+  it('getTask: historyLength=0 should return no history', async () => {
+    const history: Message[] = [
+      { kind: 'message', role: 'user', messageId: 'm1', parts: [{ kind: 'text', text: 'one' }] },
+      { kind: 'message', role: 'agent', messageId: 'm2', parts: [{ kind: 'text', text: 'two' }] },
+      { kind: 'message', role: 'user', messageId: 'm3', parts: [{ kind: 'text', text: 'three' }] },
+    ];
+    const fakeTask: Task = {
+      id: 'task-history-0',
+      contextId: 'ctx-history-0',
+      status: { state: 'working' },
+      kind: 'task',
+      history,
+    };
+    await mockTaskStore.save(fakeTask, serverCallContext);
+
+    const result = await handler.getTask(
+      { id: 'task-history-0', historyLength: 0 },
+      serverCallContext
+    );
+    assert.deepEqual(result.history, []);
+  });
+
+  it('getTask: positive historyLength should return the most recent messages', async () => {
+    const history: Message[] = [
+      { kind: 'message', role: 'user', messageId: 'm1', parts: [{ kind: 'text', text: 'one' }] },
+      { kind: 'message', role: 'agent', messageId: 'm2', parts: [{ kind: 'text', text: 'two' }] },
+      { kind: 'message', role: 'user', messageId: 'm3', parts: [{ kind: 'text', text: 'three' }] },
+    ];
+    const fakeTask: Task = {
+      id: 'task-history-2',
+      contextId: 'ctx-history-2',
+      status: { state: 'working' },
+      kind: 'task',
+      history,
+    };
+    await mockTaskStore.save(fakeTask, serverCallContext);
+
+    const result = await handler.getTask(
+      { id: 'task-history-2', historyLength: 2 },
+      serverCallContext
+    );
+    assert.deepEqual(
+      result.history?.map((m) => m.messageId),
+      ['m2', 'm3']
+    );
+  });
+
+  it('getTask: negative historyLength should return no history', async () => {
+    const history: Message[] = [
+      { kind: 'message', role: 'user', messageId: 'm1', parts: [{ kind: 'text', text: 'one' }] },
+      { kind: 'message', role: 'agent', messageId: 'm2', parts: [{ kind: 'text', text: 'two' }] },
+    ];
+    const fakeTask: Task = {
+      id: 'task-history-neg',
+      contextId: 'ctx-history-neg',
+      status: { state: 'working' },
+      kind: 'task',
+      history,
+    };
+    await mockTaskStore.save(fakeTask, serverCallContext);
+
+    const result = await handler.getTask(
+      { id: 'task-history-neg', historyLength: -1 },
+      serverCallContext
+    );
+    assert.deepEqual(result.history, []);
+  });
+
+  it('getTask: omitting historyLength should return the full history', async () => {
+    const history: Message[] = [
+      { kind: 'message', role: 'user', messageId: 'm1', parts: [{ kind: 'text', text: 'one' }] },
+      { kind: 'message', role: 'agent', messageId: 'm2', parts: [{ kind: 'text', text: 'two' }] },
+      { kind: 'message', role: 'user', messageId: 'm3', parts: [{ kind: 'text', text: 'three' }] },
+    ];
+    const fakeTask: Task = {
+      id: 'task-history-full',
+      contextId: 'ctx-history-full',
+      status: { state: 'working' },
+      kind: 'task',
+      history,
+    };
+    await mockTaskStore.save(fakeTask, serverCallContext);
+
+    const result = await handler.getTask({ id: 'task-history-full' }, serverCallContext);
+    assert.deepEqual(
+      result.history?.map((m) => m.messageId),
+      ['m1', 'm2', 'm3']
+    );
+  });
+
   it('set/getTaskPushNotificationConfig: should save and retrieve config', async () => {
     const taskId = 'task-push-config';
     const fakeTask: Task = {
